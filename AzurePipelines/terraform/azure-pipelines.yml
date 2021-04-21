@@ -1,0 +1,112 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+  - name: terraformResourceGroup
+    displayName: "Resource group name for terraform backend"
+    type: string
+    default: 'rg-terraform-backend'
+
+  - name: terraformLocation
+    displayName: "Location for terraform backend"
+    type: string
+    default: 'westeurope'
+
+  - name: terraformStorageAccount
+    displayName: "Storage account name for terraform backend"
+    type: string
+    default: 'saterraform413'
+
+  - name: terraformStorageContainer
+    displayName: "Storage container name for terraform backend"
+    type: string
+    default: 'myapplication'
+
+  - name: environment
+    displayName: "Deployment environment (This might determine configuration)"
+    type: string
+    default: 'testing'
+    values: [ 
+      'testing',
+      'staging',
+      'production'
+     ]
+
+variables: 
+  - name: 'terraformDirectory'
+    value: '$(System.DefaultWorkingDirectory)/Terraform/storageAccount'
+  
+  - name: 'terraformStateFile'
+    value: '${{ parameters.environment }}.tfstate'
+
+  - name: 'terraformVariablesFile'
+    value: '${{ parameters.environment }}.tfvars'
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Ensure infrastructure for terraform backend'
+  inputs:
+    azureSubscription: 'azure_visual_studio_subscription'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+
+      az group create \
+        --name ${{ parameters.terraformResourceGroup }} \
+        --location ${{ parameters.terraformLocation }}
+
+      az storage account create \
+        --name ${{ parameters.terraformStorageAccount }}\
+        --resource-group ${{ parameters.terraformResourceGroup }}\
+        --kind StorageV2 \
+        --sku Standard_LRS \
+        --https-only true \
+        --allow-blob-public-access false
+
+      az storage container create \
+        --name ${{ parameters.terraformStorageContainer }} \
+        --account-name ${{ parameters.terraformStorageAccount }} \
+        --auth login
+
+- task: AzureCLI@2
+  displayName: "terraform init with azurerm backend"
+  inputs:
+    azureSubscription: 'azure_visual_studio_subscription'
+    scriptType: 'bash'
+    addSpnToEnvironment: true
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+
+      export ARM_CLIENT_ID=$servicePrincipalId
+      export ARM_CLIENT_SECRET=$servicePrincipalKey
+      export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+      export ARM_TENANT_ID=$(az account show --query tenantId -o tsv)
+
+      terraform init \
+        -backend-config="storage_account_name=${{ parameters.terraformStorageAccount }}" \
+        -backend-config="container_name=${{ parameters.terraformStorageContainer }}" \
+        -backend-config="key=${{ variables.terraformStateFile }}" \
+        -backend-config="resource_group_name=${{ parameters.terraformResourceGroup }}"
+
+    workingDirectory: ${{ variables.terraformDirectory }}
+
+- task: AzureCLI@2
+  displayName: "terraform apply"
+  inputs:
+    azureSubscription: 'azure_visual_studio_subscription'
+    scriptType: 'bash'
+    addSpnToEnvironment: true
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+
+      export ARM_CLIENT_ID=$servicePrincipalId
+      export ARM_CLIENT_SECRET=$servicePrincipalKey
+      export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+      export ARM_TENANT_ID=$(az account show --query tenantId -o tsv)
+
+      terraform apply -auto-approve -var-file=$(terraformVariablesFile)
+
+    workingDirectory: ${{ variables.terraformDirectory }}

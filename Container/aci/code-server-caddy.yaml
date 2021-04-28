@@ -1,0 +1,63 @@
+name: code-server554
+apiVersion: 2019-12-01
+location: westeurope
+properties:
+  containers:
+    - name: code-server
+      properties:
+        image: ghcr.io/linuxserver/code-server
+        resources:
+          requests:
+            cpu: 1
+            memoryInGb: 1.5
+        volumeMounts:
+          - name: code-share
+            mountPath: /config
+            readOnly: false
+        environmentVariables:
+          - name: PUID
+            value: 1000
+          - name: PGID
+            value: 1000
+          - name: TZ
+            value: Europe/Berlin
+          - name: PASSWORD
+            value: $CS_PASSWORD
+        ports:
+          - protocol: tcp
+            port: 8443
+    - name: caddy
+      properties:
+        image: caddy
+        command: ["caddy", "reverse-proxy", "--from","$CS_DNS_NAME.westeurope.azurecontainer.io", "--to","0.0.0.0:8443"]
+        resources:
+          requests:
+            cpu: 1
+            memoryInGb: 1.5
+        volumeMounts:
+          - name: code-share
+            mountPath: /data
+            readOnly: false
+        ports:
+        - protocol: tcp
+          port: 80
+        - protocol: tcp
+          port: 443
+  volumes:
+    - name: code-share
+      azureFile:
+        shareName: $CS_STORAGE_SHARE_NAME
+        readOnly: false
+        storageAccountName: $CS_STORAGE_ACCOUNT_NAME
+        storageAccountKey: $CS_STORAGE_ACCOUNT_KEY
+  osType: Linux
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: tcp
+        port: 80
+      - protocol: tcp
+        port: 443
+    dnsNameLabel: $CS_DNS_NAME 
+type: Microsoft.ContainerInstance/containerGroups
+

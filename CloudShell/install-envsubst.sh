@@ -10,5 +10,5 @@ cd $gettext/
 make
 make DESTDIR=$PWD install
  
-ln -s $PWD/$gettext/usr/local/bin/envsubst ~/bin/envsubst
+ln -s $PWD/usr/local/bin/envsubst ~/bin/envsubst
 

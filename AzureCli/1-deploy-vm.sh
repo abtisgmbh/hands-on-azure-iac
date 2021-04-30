@@ -15,7 +15,6 @@ az vm create \
   --image UbuntuLTS \
   --admin-username $username \
   --generate-ssh-keys
-  
-vmPublicIp=$(az vm list -d -g $rgName -o tsv --query "[].publicIps")
 
+vmPublicIp=$(az vm show -d -g $rgName -n $vmName -o tsv --query "publicIps")
 printf "\nConnect to vm: ssh $username@$vmPublicIp\n\n"

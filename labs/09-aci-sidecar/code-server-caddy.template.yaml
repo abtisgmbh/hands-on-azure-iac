@@ -22,14 +22,14 @@ properties:
           - name: TZ
             value: Europe/Berlin
           - name: PASSWORD
-            value: Pa$$w0rd
+            value: $CS_PASSWORD
         ports:
           - protocol: tcp
             port: 8443
     - name: caddy
       properties:
         image: caddy
-        command: ["caddy", "reverse-proxy", "--from","code-server543.westeurope.azurecontainer.io", "--to","0.0.0.0:8443"]
+        command: ["caddy", "reverse-proxy", "--from","$CS_DNS_NAME.westeurope.azurecontainer.io", "--to","0.0.0.0:8443"]
         resources:
           requests:
             cpu: 1
@@ -46,10 +46,10 @@ properties:
   volumes:
     - name: code-share
       azureFile:
-        shareName: 
+        shareName: $CS_STORAGE_SHARE_NAME
         readOnly: false
-        storageAccountName: 
-        storageAccountKey: 
+        storageAccountName: $CS_STORAGE_ACCOUNT_NAME
+        storageAccountKey: $CS_STORAGE_ACCOUNT_KEY
   osType: Linux
   ipAddress:
     type: Public
@@ -58,6 +58,6 @@ properties:
         port: 80
       - protocol: tcp
         port: 443
-    dnsNameLabel: code-server543 
+    dnsNameLabel: $CS_DNS_NAME 
 type: Microsoft.ContainerInstance/containerGroups
 

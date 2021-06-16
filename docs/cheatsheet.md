@@ -181,3 +181,30 @@ bicep decompile azuredeploy.json
 ```bash
 bicep build azuredeploy.bicep
 ```
+
+## Terraform
+
+### Install Terraform with tfenv
+
+```bash
+chmod +x resources/tfenv/configure.sh
+./resources/tfenv/configure.sh
+
+tfenv install latest
+tfenv use latest
+```
+### The basic three steps of Terraform
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+
+### Specify variable file when applying Terraform
+
+```bash
+terraform apply -var-file="testing.tfvars"
+```
+
+## 

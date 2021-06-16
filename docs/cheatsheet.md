@@ -65,3 +65,43 @@ cd hands-on-azure-iac/CloudShell/zsh
 ./configure.sh
 ```
 
+## Azure CLI
+
+### Hilfe verwenden
+
+```bash
+az --help   
+```
+
+### Beispiele finden
+
+```bash
+az find "get storage account key"
+```
+
+### Output formatieren
+
+```
+az storage account list -g rg-mba-cloudshell -o table
+```
+
+### Zeilenumbruch kontrollieren
+
+```bash
+tput rmam # Remove automatic margins
+
+tput smam # Set automatic margins
+```
+
+### Ausgaben mit JMESPATH queries filtern
+
+```bash
+az storage account list \
+  --query "[?contains(resourceGroup,'mba')].[name,resourceGroup]" -o table"
+```
+
+### Ausgaben mit jq filtern
+
+```bash
+az storage account list -o json | jq -r 'resourceGroup'
+```

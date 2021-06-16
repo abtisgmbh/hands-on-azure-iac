@@ -175,3 +175,9 @@ az deployment group create --template-file azuredeploy.json -g rg-test
 ```bash
 bicep decompile azuredeploy.json
 ```
+
+### Build ARM template from bicep
+
+```bash
+bicep build azuredeploy.bicep
+```

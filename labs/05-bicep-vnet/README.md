@@ -8,6 +8,7 @@
 - `vNet2` must contain two subnets `Subnet-1` and `Subnet-2`
 - The address spaces for both vNets must not overlap
 - A vNet-Peering `myPeering`must be created on `vNet1` with `vNet2` as target
+- Both vNets have the tag `lab=5` assigned
 
 ## Help and Hints
 

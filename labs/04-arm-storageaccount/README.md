@@ -8,7 +8,7 @@ Create ARM template to deploy a storage account and deploy it to the resource gr
 - `Standard_LRS` is used as sku
 - Hot access tier for blobs
 - General Purpose v2 account
-- It carries the tag `labs=4`
+- It carries the tag `lab=4`
 
 
 ## Help and Hints

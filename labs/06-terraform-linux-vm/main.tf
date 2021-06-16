@@ -11,6 +11,9 @@ provider "azurerm" {
 resource "azurerm_resource_group" "this" {
   name     = var.resource_group
   location = var.location
+    tags = {
+    "lab" = "6"
+  }
 }
 
 # Create virtual network

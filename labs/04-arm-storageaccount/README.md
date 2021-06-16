@@ -1,8 +1,8 @@
 # 4 HandsOn Lab ARM - Deploy Storage Account
 
-- Create ARM template to deploy a storage account and deploy it to the resource group of the cloud shell instance
+Create ARM template to deploy a storage account and deploy it to the resource group of the cloud shell instance
 
-## Requirements:
+## Requirements
 
 - The ARM template must be called `azuredeploy.json`
 - `Standard_LRS` is used as sku
@@ -11,7 +11,7 @@
 - It carries the tag `labs=4`
 
 
-## Help and Hints:
+## Help and Hints
 
 - Use the Visual Studio Code extension: https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools
 - https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/storageaccounts?tabs=json

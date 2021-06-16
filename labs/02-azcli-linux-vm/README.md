@@ -1,6 +1,6 @@
 # 2 HandsOn Lab AzureCLI - Deploy Linux VM
 
-- Use AzureCLI to create a single virtual machine into the resource group that you created for your cloud shell.
+Use AzureCLI to create a single virtual machine into the resource group that you created for your cloud shell.
 
 ## Requirements:
 

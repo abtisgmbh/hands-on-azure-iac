@@ -100,8 +100,78 @@ az storage account list \
   --query "[?contains(resourceGroup,'mba')].[name,resourceGroup]" -o table"
 ```
 
-### Ausgaben mit jq filtern
+### List all resources with a certain tag
 
 ```bash
-az storage account list -o json | jq -r 'resourceGroup'
+az resource list --tag lab=2
+```
+
+### Delete all resources with a certain tag
+
+```bash
+ids_to_delete=($(az resource list --tag lab=2 --query '[].id' -o tsv))
+az resource delete --ids $ids_to_delete
+```
+
+### Delete all resource groups with a certain tag
+
+```bash
+rg_to_delete=($(az group list \
+  --tag action=delete \
+  --query '[].name' \
+  -o tsv))
+for rg in $rg_to_delete
+do 
+  az group delete --name "$rg" --no-wait -y
+done
+```
+
+### Filter any resource by tag using jmespath
+
+```bash
+az storage account list \
+  -g rg-keystore \
+  --query "[?tags.labs == '3']"
+```
+### Export arm template from existing resources
+
+```bash
+az group export -g rg-test --skip-all-params -o json > azuredeploy.json
+```
+
+### Export arm template from earlier deployments
+
+
+```bash
+lastDeployment=$(az deployment group list \
+  -g rg-test \
+  --query "sort_by([],&properties.timestamp)[1:].name" -o tsv)
+
+az deployment group export \
+  --name $lastDeployment \
+  --resource-group rg-test > azuredeploy.json
+```
+
+### Validate arm template
+
+```bash
+az deployment group validate --template-file azuredeploy.json -g rg-test  
+```
+
+### List all changes ARM would perform if the template was deployed
+
+```bash
+az deployment group what-if --template-file azuredeploy.json -g rg-test  
+```
+
+### Deploy an ARM template
+
+```bash
+az deployment group create --template-file azuredeploy.json -g rg-test 
+```
+
+### Decompile ARM template to bicep
+
+```bash
+bicep decompile azuredeploy.json
 ```

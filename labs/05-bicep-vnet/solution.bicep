@@ -22,6 +22,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
       }
     ]
   }
+  tags: {
+    lab: '5'
+  }
 }
 
 resource virtualNetwork2 'Microsoft.Network/virtualNetworks@2019-11-01' = {
@@ -47,6 +50,9 @@ resource virtualNetwork2 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         }
       }
     ]
+  }
+  tags: {
+    lab: '5'
   }
 }
 

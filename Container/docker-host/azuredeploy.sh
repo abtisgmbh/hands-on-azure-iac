@@ -8,7 +8,7 @@ ip=$(az vm create \
 --image UbuntuLTS \
 --admin-username azureuser \
 --generate-ssh-keys \
---custom-data cloud-init-docker.txt \
+--custom-data cloud-init-docker.yml \
 --query "[publicIps]" \
 --output tsv)
 

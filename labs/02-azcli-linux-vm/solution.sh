@@ -1,20 +1,16 @@
 #!/bin/bash
-rgName='rg-azurecli-test'
+rgName='' # Name of the resource group the cloud shell is hosted in
 location='westeurope'
-vmName='mylinuxVm'
+vmName='mba-ubuntu-vm12345'
 username='azureuser'
 
-printf "\nCreating resource group: $rgName\n\n"
-az group create -n $rgName -l $location
-
-
-printf "\nCreating vm: $vmName\n\n"
 az vm create \
   --resource-group $rgName \
   --name $vmName \
   --image UbuntuLTS \
   --admin-username $username \
-  --generate-ssh-keys
+  --generate-ssh-keys \
+  --tags lab=2
 
 vmPublicIp=$(az vm show -d -g $rgName -n $vmName -o tsv --query "publicIps")
-printf "\nConnect to vm: ssh $username@$vmPublicIp\n\n"
+ssh $username@$vmPublicIp

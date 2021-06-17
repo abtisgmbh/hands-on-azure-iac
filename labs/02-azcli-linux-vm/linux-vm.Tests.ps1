@@ -1,7 +1,7 @@
 BeforeAll{
 
     $rgName = $env:ACC_STORAGE_PROFILE -replace '^.+/resourcegroups/([^/]+)/.*$', '$1'
-    $vm = az vm list -g $rgName -o json | ConvertFrom-Json | Where-Object name -like 'lab02-*'
+    $vm = az vm list -g $rgName -o json | ConvertFrom-Json
     $vmPublicIp = az vm show -d -g $rgName -n $vm.name -o tsv --query "publicIps"
 }
 
